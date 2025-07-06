@@ -1,4 +1,4 @@
-namespace SqlQueryHelper.Tests;
+namespace SqlQueryHelper.Tests.SqlQueryGeneratorTests;
 
 public class DropIndexIfExistsTests
 {
