@@ -136,7 +136,7 @@ public class SqlQueryParser
                     currentToken.Clear();
                 }
 
-                var quotedString = ParseQuotedString(sqlQuery, '[', ']', index, ref index);
+                var quotedString = ParseQuotedString(sqlQuery, index, ref index);
                 tokens.Add(quotedString);
             }
             else if (c == '(')
@@ -147,8 +147,8 @@ public class SqlQueryParser
                     currentToken.Clear();
                 }
 
-                var quotedString = ParseQuotedString(sqlQuery, '(', ')', index, ref index);
-                tokens.Add(quotedString);
+                var groupedString = ParseGroupedString(sqlQuery, index, ref index);
+                tokens.Add(groupedString);
             }
             else if (c == '.' || c == ',' || c == '=')
             {
@@ -171,7 +171,36 @@ public class SqlQueryParser
         return tokens;
     }
 
-    private static string ParseQuotedString(string sqlQuery, char beginQuote, char endQuote, int start, ref int index)
+    private static string ParseQuotedString(string sqlQuery, int start, ref int index)
+    {
+        index++;
+
+        while (index < sqlQuery.Length)
+        {
+            var c = sqlQuery[index];
+
+            if (c == ']')
+            {
+                if (index + 1 < sqlQuery.Length && sqlQuery[index + 1] == ']')
+                {
+                    // Handle escaped closing bracket
+                    index++;
+                }
+                else
+                {
+                    // Found the end of the quoted string
+                    var rs = sqlQuery.Substring(start, index - start + 1);
+                    return rs;
+                }
+            }
+
+            index++;
+        }
+
+        throw new Exception("Invalid Syntax.");
+    }
+
+    private static string ParseGroupedString(string sqlQuery, int start, ref int index)
     {
         var count = 1;
 
@@ -181,11 +210,11 @@ public class SqlQueryParser
         {
             var c = sqlQuery[index];
 
-            if (c == beginQuote)
+            if (c == '(')
             {
                 count++;
             }
-            else if (c == endQuote)
+            else if (c == ')')
             {
                 count--;
 
