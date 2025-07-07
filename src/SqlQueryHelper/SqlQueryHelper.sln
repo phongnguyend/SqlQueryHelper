@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlQueryHelper", "SqlQueryH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlQueryHelper.Tests", "SqlQueryHelper.Tests\SqlQueryHelper.Tests.csproj", "{5ABBA395-1B9A-454E-BDE6-55330A57E447}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer", "SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer\SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer.csproj", "{A02BB3F0-6F62-F11B-5220-C8212C3362F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5ABBA395-1B9A-454E-BDE6-55330A57E447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ABBA395-1B9A-454E-BDE6-55330A57E447}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ABBA395-1B9A-454E-BDE6-55330A57E447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A02BB3F0-6F62-F11B-5220-C8212C3362F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A02BB3F0-6F62-F11B-5220-C8212C3362F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A02BB3F0-6F62-F11B-5220-C8212C3362F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A02BB3F0-6F62-F11B-5220-C8212C3362F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
