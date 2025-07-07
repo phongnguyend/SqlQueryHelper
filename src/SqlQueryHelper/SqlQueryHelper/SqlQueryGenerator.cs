@@ -4,6 +4,21 @@ namespace SqlQueryHelper;
 
 public class SqlQueryGenerator
 {
+    public static string CreateIndexIfNotExists(string tableName, string indexName, string script)
+    {
+        tableName = tableName.Trim();
+        indexName = indexName.Trim().Trim('[', ']');
+
+        string sql = $"""
+            IF NOT EXISTS(SELECT * FROM sys.indexes WHERE object_id = object_id('{tableName}') AND NAME = '{indexName}')
+            BEGIN
+                {script};
+            END;
+            """;
+
+        return sql;
+    }
+
     public static string DropIndexIfExists(string tableName, string indexName)
     {
         tableName = tableName.Trim();
