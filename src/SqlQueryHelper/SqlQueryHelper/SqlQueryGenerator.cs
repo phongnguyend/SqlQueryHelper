@@ -19,6 +19,18 @@ public class SqlQueryGenerator
         return sql;
     }
 
+    public static string CreateIndexIfNotExists(string script)
+    {
+        var indexInfor = SqlQueryParser.ParseIndexV2(script);
+
+        if (string.IsNullOrWhiteSpace(indexInfor?.TableName) || string.IsNullOrWhiteSpace(indexInfor?.Name))
+        {
+            throw new ArgumentException($"The script must contain a valid table name and index name. TableName: {indexInfor?.TableName}, Name: {indexInfor?.Name}");
+        }
+
+        return CreateIndexIfNotExists(indexInfor.TableName, indexInfor.Name, script);
+    }
+
     public static string DropIndexIfExists(string tableName, string indexName)
     {
         tableName = tableName.Trim();

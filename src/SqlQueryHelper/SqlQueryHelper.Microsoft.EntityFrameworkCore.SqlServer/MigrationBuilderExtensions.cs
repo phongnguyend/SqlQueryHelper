@@ -10,6 +10,12 @@ internal static class MigrationBuilderExtensions
         migrationBuilder.Sql(sql);
     }
 
+    public static void CreateIndexIfNotExists(this MigrationBuilder migrationBuilder, string script)
+    {
+        var sql = SqlQueryGenerator.CreateIndexIfNotExists(script);
+        migrationBuilder.Sql(sql);
+    }
+
     public static void DropIndexIfExists(this MigrationBuilder migrationBuilder, string tableName, string indexName)
     {
         var sql = SqlQueryGenerator.DropIndexIfExists(tableName, indexName);
