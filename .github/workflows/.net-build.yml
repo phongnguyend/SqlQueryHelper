@@ -1,0 +1,45 @@
+name: .Net Build SqlQueryHelper
+
+on:
+  push:
+    paths: 
+      - 'src/SqlQueryHelper/**'
+  pull_request:
+    paths: 
+      - 'src/SqlQueryHelper/**'
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    defaults: 
+      run:
+        working-directory: src/SqlQueryHelper
+        
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+  
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.100
+
+    - name: Test
+      run: dotnet test SqlQueryHelper.Tests/SqlQueryHelper.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+    - name: Build
+      run: dotnet build --configuration Release 
+
+    - name: Upload SqlQueryHelper
+      uses: actions/upload-artifact@v4
+      with:
+        name: SqlQueryHelper
+        path: src/SqlQueryHelper/SqlQueryHelper/bin/Release/*.nupkg
+
+    - name: Upload SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer
+      uses: actions/upload-artifact@v4
+      with:
+        name: SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer
+        path: src/SqlQueryHelper/SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer/bin/Release/*.nupkg

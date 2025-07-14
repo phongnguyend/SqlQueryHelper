@@ -110,7 +110,7 @@ public class SqlQueryParser
         return indexInfo;
     }
 
-    private static List<string> ParseTokens(string sqlQuery)
+    public static List<string> ParseTokens(string sqlQuery)
     {
         var tokens = new List<string>();
         var currentToken = new StringBuilder();
@@ -150,7 +150,7 @@ public class SqlQueryParser
                 var groupedString = ParseGroupedString(sqlQuery, index, ref index);
                 tokens.Add(groupedString);
             }
-            else if (c == '.' || c == ',' || c == '=')
+            else if (c == '.' || c == ',' || c == '=' || c == ';')
             {
                 if (currentToken.Length > 0)
                 {
@@ -166,6 +166,12 @@ public class SqlQueryParser
             }
 
             index++;
+        }
+
+        if (currentToken.Length > 0)
+        {
+            tokens.Add(currentToken.ToString());
+            currentToken.Clear();
         }
 
         return tokens;
@@ -229,6 +235,58 @@ public class SqlQueryParser
         }
 
         throw new Exception("Invalid Syntax.");
+    }
+
+    public static IEnumerable<string> SplitSqlBatches(string script)
+    {
+        var lines = script.Split(["\r\n", "\n"], StringSplitOptions.None);
+
+        var batch = new List<string>();
+
+        foreach (var line in lines)
+        {
+            var trimmed = line.Trim();
+
+            if (IsGoBatchSeparator(trimmed))
+            {
+                if (batch.Count > 0)
+                {
+                    yield return string.Join(Environment.NewLine, batch);
+                    batch.Clear();
+                }
+            }
+            else
+            {
+                batch.Add(line);
+            }
+        }
+
+        if (batch.Count > 0)
+        {
+            yield return string.Join(Environment.NewLine, batch);
+        }
+    }
+
+    public static bool IsGoBatchSeparator(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            return false;
+        }
+
+        var tokens = ParseTokens(line);
+
+        if (tokens.Count == 1 && string.Equals(tokens[0], "GO", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (tokens.Count == 2 && string.Equals(tokens[0], "GO", StringComparison.OrdinalIgnoreCase) && tokens[1] == ";")
+        {
+            return true;
+        }
+
+        return false;
     }
 }
 
