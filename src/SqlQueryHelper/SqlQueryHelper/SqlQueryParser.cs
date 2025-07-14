@@ -8,8 +8,9 @@ public class SqlQueryParser
     {
         var indexInfo = new IndexInfo();
 
-        var tokens = sqlQuery
-            .Split([' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+        char[] separators = [' ', '\r', '\n'];
+
+        var tokens = sqlQuery.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
         var index = 0;
         var indexOfCREATEKeyword = -1;
