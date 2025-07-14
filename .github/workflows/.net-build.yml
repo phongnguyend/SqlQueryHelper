@@ -38,8 +38,8 @@ jobs:
         name: SqlQueryHelper
         path: src/SqlQueryHelper/SqlQueryHelper/bin/Release/*.nupkg
 
-    - name: Upload SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer
+    - name: Upload SqlQueryHelper.EntityFrameworkCore.SqlServer
       uses: actions/upload-artifact@v4
       with:
-        name: SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer
-        path: src/SqlQueryHelper/SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer/bin/Release/*.nupkg
+        name: SqlQueryHelper.EntityFrameworkCore.SqlServer
+        path: src/SqlQueryHelper/SqlQueryHelper.EntityFrameworkCore.SqlServer/bin/Release/*.nupkg

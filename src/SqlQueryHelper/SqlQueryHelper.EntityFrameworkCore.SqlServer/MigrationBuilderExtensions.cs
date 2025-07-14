@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer;
+namespace SqlQueryHelper.EntityFrameworkCore.SqlServer;
 
 internal static class MigrationBuilderExtensions
 {

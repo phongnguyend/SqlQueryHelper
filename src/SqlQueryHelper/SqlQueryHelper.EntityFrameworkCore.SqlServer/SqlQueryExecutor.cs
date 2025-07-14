@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace SqlQueryHelper.Microsoft.EntityFrameworkCore.SqlServer;
+namespace SqlQueryHelper.EntityFrameworkCore.SqlServer;
 
 public class SqlQueryExecutor
 {
