@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace SqlQueryHelper;
+namespace SqlServerQueryHelper;
 
 public class SqlQueryParser
 {

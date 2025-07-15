@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SqlQueryHelper\SqlQueryHelper.csproj" />
+    <ProjectReference Include="..\SqlServerQueryHelper\SqlServerQueryHelper.csproj" />
   </ItemGroup>
 
 </Project>

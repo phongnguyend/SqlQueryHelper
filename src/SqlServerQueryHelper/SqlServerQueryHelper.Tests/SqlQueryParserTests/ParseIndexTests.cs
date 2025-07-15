@@ -1,4 +1,4 @@
-namespace SqlQueryHelper.Tests.SqlQueryParserTests;
+namespace SqlServerQueryHelper.Tests.SqlQueryParserTests;
 
 public class ParseIndexTests
 {

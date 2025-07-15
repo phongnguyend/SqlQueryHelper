@@ -1,4 +1,4 @@
-namespace SqlQueryHelper.Tests.SqlQueryGeneratorTests;
+namespace SqlServerQueryHelper.Tests.SqlQueryGeneratorTests;
 
 public class CountDuplicatedRecordsTests
 {
