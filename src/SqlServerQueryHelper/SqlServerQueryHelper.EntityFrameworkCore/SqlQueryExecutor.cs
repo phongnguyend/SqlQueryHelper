@@ -1,14 +1,15 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace SqlServerQueryHelper.EntityFrameworkCore;
 
 public class SqlQueryExecutor
 {
-    public static void ExecuteSql(string path, string connectionString)
+    public static void ExecuteSql(string path, string connectionString, Action<string> log = null)
     {
         foreach (var file in Directory.EnumerateFiles(path, "*.sql").OrderBy(f => f))
         {
-            Console.WriteLine($"Executing: {Path.GetFileName(file)}");
+            log?.Invoke($"Executing: {Path.GetFileName(file)}");
 
             string script = File.ReadAllText(file);
 
@@ -21,5 +22,10 @@ public class SqlQueryExecutor
                 command.ExecuteNonQuery();
             }
         }
+    }
+
+    public static void ExecuteSql(string path, DbContext dbContext, Action<string> log = null)
+    {
+        ExecuteSql(path, dbContext.Database.GetConnectionString()!, log);
     }
 }
