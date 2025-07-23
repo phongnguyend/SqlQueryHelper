@@ -105,8 +105,8 @@ public class SqlQueryParser
             index++;
         }
 
-        indexInfo.Name = string.Join(string.Empty, tokens.Slice(indexOfINDEXKeyword + 1, indexOfONKeyword - indexOfINDEXKeyword - 1).ToArray());
-        indexInfo.TableName = string.Join(string.Empty, tokens.Slice(indexOfONKeyword + 1, indeOfIndexColumns - indexOfONKeyword - 1).ToArray());
+        indexInfo.Name = string.Join(string.Empty, tokens.Slice(indexOfINDEXKeyword + 1, indexOfONKeyword - indexOfINDEXKeyword - 1).ToArray()).Trim();
+        indexInfo.TableName = string.Join(string.Empty, tokens.Slice(indexOfONKeyword + 1, indeOfIndexColumns - indexOfONKeyword - 1).ToArray()).Trim();
 
         return indexInfo;
     }
@@ -120,6 +120,54 @@ public class SqlQueryParser
         while (index < sqlQuery.Length)
         {
             var c = sqlQuery[index];
+
+            // Handle single-line comment as a special token
+            if (c == '-' && index + 1 < sqlQuery.Length && sqlQuery[index + 1] == '-')
+            {
+                if (currentToken.Length > 0)
+                {
+                    tokens.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
+                string comment = ParseSingleLineComment(sqlQuery, ref index);
+                tokens.Add(comment);
+                continue;
+            }
+
+            // Handle multi-line comment as a special token
+            if (c == '/' && index + 1 < sqlQuery.Length && sqlQuery[index + 1] == '*')
+            {
+                if (currentToken.Length > 0)
+                {
+                    tokens.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
+                string comment = ParseMultiLinesComment(sqlQuery, ref index);
+                tokens.Add(comment);
+                continue;
+            }
+
+            // Preserve newlines as special tokens
+            if (c == '\r' || c == '\n')
+            {
+                if (currentToken.Length > 0)
+                {
+                    tokens.Add(currentToken.ToString());
+                    currentToken.Clear();
+                }
+                if (c == '\r' && index + 1 < sqlQuery.Length && sqlQuery[index + 1] == '\n')
+                {
+                    tokens.Add("\r\n");
+                    index += 2;
+                    continue;
+                }
+                else
+                {
+                    tokens.Add(c.ToString());
+                    index++;
+                    continue;
+                }
+            }
 
             if (char.IsWhiteSpace(c))
             {
@@ -176,6 +224,34 @@ public class SqlQueryParser
         }
 
         return tokens;
+    }
+
+    private static string ParseSingleLineComment(string sqlQuery, ref int index)
+    {
+        int start = index;
+        index += 2;
+        while (index < sqlQuery.Length && sqlQuery[index] != '\n' && sqlQuery[index] != '\r')
+        {
+            index++;
+        }
+        // Do not increment index here, let ParseTokens handle it
+        return sqlQuery.Substring(start, index - start);
+    }
+
+    private static string ParseMultiLinesComment(string sqlQuery, ref int index)
+    {
+        int start = index;
+        index += 2;
+        while (index < sqlQuery.Length - 1)
+        {
+            if (sqlQuery[index] == '*' && sqlQuery[index + 1] == '/')
+            {
+                index += 2;
+                break;
+            }
+            index++;
+        }
+        return sqlQuery.Substring(start, index - start);
     }
 
     private static string ParseQuotedString(string sqlQuery, int start, ref int index)
