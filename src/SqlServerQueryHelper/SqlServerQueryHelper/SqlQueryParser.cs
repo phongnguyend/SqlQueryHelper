@@ -8,58 +8,6 @@ public class SqlQueryParser
     {
         var indexInfo = new IndexInfo();
 
-        char[] separators = [' ', '\r', '\n'];
-
-        var tokens = sqlQuery.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-        var index = 0;
-        var indexOfCREATEKeyword = -1;
-        var indexOfINDEXKeyword = -1;
-        var indexOfONKeyword = -1;
-        var indexOfINCLUDEKeyword = -1;
-        var indexOfWITHKeyword = -1;
-
-        foreach (var token in tokens)
-        {
-            if (token.Equals("CREATE", StringComparison.OrdinalIgnoreCase))
-            {
-                indexOfCREATEKeyword = index;
-            }
-
-            if (token.Equals("INDEX", StringComparison.OrdinalIgnoreCase))
-            {
-                indexOfINDEXKeyword = index;
-            }
-
-            if (token.Equals("ON", StringComparison.OrdinalIgnoreCase))
-            {
-                indexOfONKeyword = index;
-            }
-
-            if (token.Equals("INCLUDE", StringComparison.OrdinalIgnoreCase))
-            {
-                indexOfINCLUDEKeyword = index;
-            }
-
-            if (token.Equals("WITH", StringComparison.OrdinalIgnoreCase))
-            {
-                indexOfWITHKeyword = index;
-            }
-
-            index++;
-        }
-
-        indexInfo.Name = tokens[indexOfINDEXKeyword + 1];
-
-        indexInfo.TableName = tokens[indexOfONKeyword + 1];
-
-        return indexInfo;
-    }
-
-    public static IndexInfo ParseIndexV2(string sqlQuery)
-    {
-        var indexInfo = new IndexInfo();
-
         var tokens = ParseTokens(sqlQuery).ToArray().AsSpan();
 
         var index = 0;
@@ -175,6 +123,11 @@ public class SqlQueryParser
                 {
                     tokens.Add(currentToken.ToString());
                     currentToken.Clear();
+                }
+
+                if (c != '\r' && c != '\n')
+                {
+                    tokens.Add(c.ToString());
                 }
             }
             else if (c == '[')
@@ -364,6 +317,16 @@ public class SqlQueryParser
         }
 
         return false;
+    }
+
+    public static string RegenerateSqlQuery(List<string> tokens)
+    {
+        if (tokens == null || tokens.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join("", tokens);
     }
 }
 

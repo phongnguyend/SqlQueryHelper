@@ -7,8 +7,8 @@ public class ParseTokensTests
     {
         var sql = "SELECT * FROM Table1;";
         var tokens = SqlQueryParser.ParseTokens(sql);
-        Assert.Equal(new List<string> { "SELECT", "*", "FROM", "Table1", ";" }, tokens);
-        Assert.Equal(5, tokens.Count);
+        Assert.Equal(new List<string> { "SELECT"," ", "*", " ", "FROM", " ", "Table1", ";" }, tokens);
+        Assert.Equal(8, tokens.Count);
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class ParseTokensTests
         var tokens = SqlQueryParser.ParseTokens(sql);
         Assert.Contains("[Col1]", tokens);
         Assert.Contains("[Table1]", tokens);
-        Assert.Equal(5, tokens.Count);
+        Assert.Equal(8, tokens.Count);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class ParseTokensTests
         Assert.Contains("(Col1,Col2)", tokens);
         Assert.Contains("(1,2)", tokens);
         Assert.Contains(";", tokens);
-        Assert.Equal(7, tokens.Count);
+        Assert.Equal(12, tokens.Count);
     }
 
     [Fact]
@@ -37,8 +37,8 @@ public class ParseTokensTests
     {
         var sql = "SELECT 1 -- this is a comment\nGO";
         var tokens = SqlQueryParser.ParseTokens(sql);
-        Assert.Contains("-- this is a comment", tokens[2]);
-        Assert.Equal(5, tokens.Count);
+        Assert.Contains("-- this is a comment", tokens[4]);
+        Assert.Equal(7, tokens.Count);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class ParseTokensTests
         var sql = "SELECT /* multi\nline\ncomment */ 1";
         var tokens = SqlQueryParser.ParseTokens(sql);
         Assert.Contains("/* multi\nline\ncomment */", tokens);
-        Assert.Equal(3, tokens.Count);
+        Assert.Equal(5, tokens.Count);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class ParseTokensTests
         var tokens = SqlQueryParser.ParseTokens(sql);
         Assert.Contains("\n", tokens);
         Assert.Contains("\r\n", tokens);
-        Assert.Equal(7, tokens.Count);
+        Assert.Equal(9, tokens.Count);
     }
 
     [Fact]
@@ -73,6 +73,6 @@ public class ParseTokensTests
         Assert.Contains("[Table1]", tokens);
         Assert.Contains("/*multi\nline*/", tokens);
         Assert.Contains(";", tokens);
-        Assert.Equal(10, tokens.Count);
+        Assert.Equal(15, tokens.Count);
     }
 }
