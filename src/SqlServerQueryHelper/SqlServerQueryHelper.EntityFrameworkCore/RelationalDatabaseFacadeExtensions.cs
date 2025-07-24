@@ -45,7 +45,7 @@ public static class RelationalDatabaseFacadeExtensions
         SqlQueryExecutor.ExecuteSqlFiles(path, databaseFacade.GetConnectionString()!, log);
     }
 
-    public static void ExecuteSqlFile(this DatabaseFacade databaseFacade, string file, DbContext dbContext, Action<string> log = null)
+    public static void ExecuteSqlFile(this DatabaseFacade databaseFacade, string file, Action<string> log = null)
     {
         SqlQueryExecutor.ExecuteSqlFile(file, databaseFacade.GetConnectionString()!, log);
     }
