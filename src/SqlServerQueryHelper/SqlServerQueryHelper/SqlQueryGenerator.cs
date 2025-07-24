@@ -21,7 +21,7 @@ public class SqlQueryGenerator
 
     public static string CreateIndexIfNotExists(string script)
     {
-        var indexInfor = SqlQueryParser.ParseIndex(script);
+        var indexInfor = SqlQueryIndexParser.ParseIndex(script);
 
         if (string.IsNullOrWhiteSpace(indexInfor?.TableName) || string.IsNullOrWhiteSpace(indexInfor?.Name))
         {

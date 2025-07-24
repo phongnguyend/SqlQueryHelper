@@ -1,4 +1,4 @@
-namespace SqlServerQueryHelper.Tests.SqlQueryParserTests;
+namespace SqlServerQueryHelper.Tests.SqlQueryIndexParserTests;
 
 public class ParseIndexTests
 {
@@ -14,7 +14,7 @@ public class ParseIndexTests
             """;
 
         // Act
-        var indexInfo = SqlQueryParser.ParseIndex(sql);
+        var indexInfo = SqlQueryIndexParser.ParseIndex(sql);
 
         Assert.Equal("[IDX_Name]", indexInfo.Name);
         Assert.Equal("[dbo].[TableName]", indexInfo.TableName);
@@ -32,7 +32,7 @@ public class ParseIndexTests
             """;
 
         // Act
-        var indexInfo = SqlQueryParser.ParseIndex(sql);
+        var indexInfo = SqlQueryIndexParser.ParseIndex(sql);
 
         Assert.Equal("[IDX_Name]", indexInfo.Name);
         Assert.Equal("[dbo].[TableName]", indexInfo.TableName);
@@ -50,7 +50,7 @@ public class ParseIndexTests
             """;
 
         // Act
-        var indexInfo = SqlQueryParser.ParseIndex(sql);
+        var indexInfo = SqlQueryIndexParser.ParseIndex(sql);
 
         Assert.Equal("[IDX_Name]", indexInfo.Name);
         Assert.Equal("[dbo].[[[Table]]Name]", indexInfo.TableName);
