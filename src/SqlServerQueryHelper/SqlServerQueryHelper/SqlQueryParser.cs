@@ -339,16 +339,15 @@ public class SqlQueryParser
         }
 
         var result = new StringBuilder();
-        
+
         foreach (var tokenGroup in tokenGroups)
         {
-            if (tokenGroup != null)
+            if (tokenGroup == null)
             {
-                foreach (var token in tokenGroup)
-                {
-                    result.Append(token);
-                }
+                continue;
             }
+
+            result.Append(RegenerateSqlQuery(tokenGroup));
         }
 
         return result.ToString();
