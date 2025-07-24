@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace SqlServerQueryHelper.EntityFrameworkCore;
@@ -55,15 +54,5 @@ public class SqlQueryExecutor
         {
             File.WriteAllText(file + ".debug", test!.ToString());
         }
-    }
-
-    public static void ExecuteSqlFiles(string path, DbContext dbContext, Action<string> log = null)
-    {
-        ExecuteSqlFiles(path, dbContext.Database.GetConnectionString()!, log);
-    }
-
-    public static void ExecuteSqlFile(string file, DbContext dbContext, Action<string> log = null)
-    {
-        ExecuteSqlFile(file, dbContext.Database.GetConnectionString()!, log);
     }
 }

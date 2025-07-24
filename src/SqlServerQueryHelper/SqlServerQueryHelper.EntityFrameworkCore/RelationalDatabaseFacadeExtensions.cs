@@ -39,4 +39,14 @@ public static class RelationalDatabaseFacadeExtensions
         var edition = command.ExecuteScalar()?.ToString();
         return edition;
     }
+
+    public static void ExecuteSqlFiles(this DatabaseFacade databaseFacade, string path, Action<string> log = null)
+    {
+        SqlQueryExecutor.ExecuteSqlFiles(path, databaseFacade.GetConnectionString()!, log);
+    }
+
+    public static void ExecuteSqlFile(this DatabaseFacade databaseFacade, string file, DbContext dbContext, Action<string> log = null)
+    {
+        SqlQueryExecutor.ExecuteSqlFile(file, databaseFacade.GetConnectionString()!, log);
+    }
 }
