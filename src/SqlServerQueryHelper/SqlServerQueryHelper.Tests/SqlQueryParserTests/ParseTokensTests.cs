@@ -75,4 +75,70 @@ public class ParseTokensTests
         Assert.Contains(";", tokens);
         Assert.Equal(15, tokens.Count);
     }
+
+    [Fact]
+    public void GroupTokensByLine_SingleLine_GroupsCorrectly()
+    {
+        var sql = "SELECT * FROM Table1;";
+        var tokens = SqlQueryParser.ParseTokens(sql);
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(tokens);
+        
+        Assert.Single(groupedTokens);
+        Assert.Equal(new List<string> { "SELECT", " ", "*", " ", "FROM", " ", "Table1", ";" }, groupedTokens[0]);
+    }
+
+    [Fact]
+    public void GroupTokensByLine_MultipleLines_GroupsCorrectly()
+    {
+        var sql = "SELECT 1\nGO\r\nSELECT 2";
+        var tokens = SqlQueryParser.ParseTokens(sql);
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(tokens);
+        
+        Assert.Equal(3, groupedTokens.Count);
+        Assert.Equal(new List<string> { "SELECT", " ", "1", "\n" }, groupedTokens[0]);
+        Assert.Equal(new List<string> { "GO", "\r\n" }, groupedTokens[1]);
+        Assert.Equal(new List<string> { "SELECT", " ", "2" }, groupedTokens[2]);
+    }
+
+    [Fact]
+    public void GroupTokensByLine_EmptyLines_PreservesStructure()
+    {
+        var sql = "SELECT 1\n\nSELECT 2";
+        var tokens = SqlQueryParser.ParseTokens(sql);
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(tokens);
+        
+        Assert.Equal(3, groupedTokens.Count);
+        Assert.Equal(new List<string> { "SELECT", " ", "1", "\n" }, groupedTokens[0]);
+        Assert.Equal(new List<string> { "\n" }, groupedTokens[1]); // Empty line with newline
+        Assert.Equal(new List<string> { "SELECT", " ", "2" }, groupedTokens[2]);
+    }
+
+    [Fact]
+    public void GroupTokensByLine_WithComments_GroupsCorrectly()
+    {
+        var sql = "SELECT 1 --comment\r\nFROM Table1";
+        var tokens = SqlQueryParser.ParseTokens(sql);
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(tokens);
+        
+        Assert.Equal(2, groupedTokens.Count);
+        Assert.Equal(new List<string> { "SELECT", " ", "1", " ", "--comment", "\r\n" }, groupedTokens[0]);
+        Assert.Equal(new List<string> { "FROM", " ", "Table1" }, groupedTokens[1]);
+    }
+
+    [Fact]
+    public void GroupTokensByLine_EmptyTokenList_ReturnsEmpty()
+    {
+        var tokens = new List<string>();
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(tokens);
+        
+        Assert.Empty(groupedTokens);
+    }
+
+    [Fact]
+    public void GroupTokensByLine_NullTokenList_ReturnsEmpty()
+    {
+        var groupedTokens = SqlQueryParser.GroupTokensByLine(null);
+        
+        Assert.Empty(groupedTokens);
+    }
 }

@@ -328,6 +328,68 @@ public class SqlQueryParser
 
         return string.Join("", tokens);
     }
+
+    public static string RegenerateSqlQuery(List<List<string>> tokenGroups)
+    {
+        if (tokenGroups == null || tokenGroups.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var result = new StringBuilder();
+        
+        foreach (var tokenGroup in tokenGroups)
+        {
+            if (tokenGroup != null)
+            {
+                foreach (var token in tokenGroup)
+                {
+                    result.Append(token);
+                }
+            }
+        }
+
+        return result.ToString();
+    }
+
+    /// <summary>
+    /// Groups tokens by line based on newline delimiters (\n and \r\n).
+    /// Each group represents tokens that belong to the same line, including the newline delimiter.
+    /// </summary>
+    /// <param name="tokens">The list of tokens to group</param>
+    /// <returns>A list of token groups, where each group represents a line</returns>
+    public static List<List<string>> GroupTokensByLine(List<string> tokens)
+    {
+        if (tokens == null || tokens.Count == 0)
+        {
+            return new List<List<string>>();
+        }
+
+        var result = new List<List<string>>();
+        var currentLine = new List<string>();
+
+        foreach (var token in tokens)
+        {
+            // Add token to current line (including newline delimiters)
+            currentLine.Add(token);
+
+            // Check if token is a newline delimiter
+            if (token == "\n" || token == "\r\n")
+            {
+                // Add current line to result (including the newline delimiter)
+                result.Add(new List<string>(currentLine));
+                currentLine.Clear();
+            }
+        }
+
+        // Add the last line if it has any tokens
+        if (currentLine.Count > 0)
+        {
+            result.Add(currentLine);
+        }
+
+        return result;
+    }
 }
 
 public class IndexInfo
