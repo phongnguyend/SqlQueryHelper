@@ -269,42 +269,44 @@ public class SqlQueryParser
 
     public static IEnumerable<string> SplitSqlBatches(string script)
     {
-        var lines = script.Split(["\r\n", "\n"], StringSplitOptions.None);
+        var tokens = ParseTokens(script);
+        var lines = GroupTokensByLine(tokens);
 
         var batch = new List<string>();
 
         foreach (var line in lines)
         {
-            var trimmed = line.Trim();
-
-            if (IsGoBatchSeparator(trimmed))
+            if (IsGoBatchSeparator(line))
             {
                 if (batch.Count > 0)
                 {
-                    yield return string.Join(Environment.NewLine, batch);
+                    yield return string.Join(string.Empty, batch).Trim();
                     batch.Clear();
                 }
             }
             else
             {
-                batch.Add(line);
+                batch.Add(RegenerateSqlQuery(line));
             }
         }
 
         if (batch.Count > 0)
         {
-            yield return string.Join(Environment.NewLine, batch);
+            yield return string.Join(string.Empty, batch).Trim();
         }
     }
 
-    public static bool IsGoBatchSeparator(string line)
+    public static bool IsGoBatchSeparator(List<string> tokens)
     {
-        if (string.IsNullOrWhiteSpace(line))
+        if (tokens == null || tokens.Count == 0)
         {
             return false;
         }
 
-        var tokens = ParseTokens(line);
+        tokens = tokens.Where(t => !string.IsNullOrWhiteSpace(t)
+                                    && !t.StartsWith("--", StringComparison.OrdinalIgnoreCase) // Exclude single-line comments
+                                    && !t.StartsWith("/*", StringComparison.OrdinalIgnoreCase) // Exclude multi-line comments
+        ).ToList();
 
         if (tokens.Count == 1 && string.Equals(tokens[0], "GO", StringComparison.OrdinalIgnoreCase))
         {
@@ -326,7 +328,7 @@ public class SqlQueryParser
             return string.Empty;
         }
 
-        return string.Join("", tokens);
+        return string.Join(string.Empty, tokens);
     }
 
     public static string RegenerateSqlQuery(List<List<string>> tokenGroups)
