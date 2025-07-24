@@ -9,7 +9,7 @@ public class SqlQueryExecutor
     {
         foreach (var file in Directory.EnumerateFiles(path, "*.sql").OrderBy(f => f))
         {
-            log?.Invoke($"Executing: {Path.GetFileName(file)}");
+            log?.Invoke($"Executing File: {Path.GetFileName(file)}");
 
             string script = File.ReadAllText(file);
 
@@ -18,6 +18,14 @@ public class SqlQueryExecutor
 
             foreach (var sql in SqlQueryParser.SplitSqlBatches(script))
             {
+                if (string.IsNullOrWhiteSpace(sql))
+                {
+                    continue;
+                }
+
+                log?.Invoke($"Executing Batch:");
+                log?.Invoke(sql);
+
                 using var command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
             }
